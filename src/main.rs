@@ -43,8 +43,7 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
-        .add_system(paddle_movement_system)
-        .add_system(ball_collision_system)
+        .add_system_set(game_state_systems())
         .run();
 }
 
@@ -105,6 +104,12 @@ fn setup(mut commands: Commands) {
         .insert(Ball {
             velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0)
         });
+}
+
+fn game_state_systems() -> SystemSet {
+    SystemSet::new()
+        .with_system(paddle_movement_system)
+        .with_system(ball_collision_system)
 }
 
 fn paddle_movement_system(mut paddle_query: Query<(&mut Transform, &Paddle)>, keyboard_input: Res<Input<KeyCode>>) {
