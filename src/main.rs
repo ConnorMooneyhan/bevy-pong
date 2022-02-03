@@ -25,6 +25,12 @@ struct Ball {
     velocity: Vec3
 }
 
+enum GameState {
+    StartScreen,
+    Playing,
+    EndGame,
+}
+
 
 fn main() {
     App::new()
