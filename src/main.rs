@@ -37,11 +37,11 @@ fn setup(mut commands: Commands) {
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
                 color: Color::WHITE,
-                custom_size: Some(Vec2::new(PADDLE_WIDTH, PADDLE_HEIGHT)),
                 ..Default::default()
             },
             transform: Transform {
                 translation: Vec3::new((-SCREEN_WIDTH / 2.0) + (PADDLE_WIDTH / 2.0), 0.0, 1.0),
+                scale: Vec3::new(PADDLE_WIDTH, PADDLE_HEIGHT, 1.0),
                 ..Default::default()
             },
             ..Default::default()
@@ -54,11 +54,11 @@ fn setup(mut commands: Commands) {
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
                 color: Color::WHITE,
-                custom_size: Some(Vec2::new(PADDLE_WIDTH, PADDLE_HEIGHT)),
                 ..Default::default()
             },
             transform: Transform {
                 translation: Vec3::new((SCREEN_WIDTH / 2.0) - (PADDLE_WIDTH / 2.0), 0.0, 1.0),
+                scale: Vec3::new(PADDLE_WIDTH, PADDLE_HEIGHT, 1.0),
                 ..Default::default()
             },
             ..Default::default()
