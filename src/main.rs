@@ -5,6 +5,7 @@ const SCREEN_HEIGHT: f32 = 800.0;
 const PADDLE_WIDTH: f32 = 12.0;
 const PADDLE_HEIGHT: f32 = 100.0;
 const PADDLE_SPEED: f32 = 3.0;
+const BALL_DIAMETER: f32 = 10.0;
 
 #[derive(Component)]
 struct Paddle {
@@ -13,7 +14,9 @@ struct Paddle {
 }
 
 #[derive(Component)]
-struct Ball;
+struct Ball {
+    velocity: f32
+}
 
 
 fn main() {
@@ -27,12 +30,14 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
-        .add_system(paddle_movement)
+        .add_system(paddle_movement_system)
         .run();
 }
 
 fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+
+    // Left Paddle
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -50,6 +55,8 @@ fn setup(mut commands: Commands) {
             up_key: KeyCode::W,
             down_key: KeyCode::S,
         });
+
+    // Right Paddle
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -67,9 +74,23 @@ fn setup(mut commands: Commands) {
             up_key: KeyCode::Up,
             down_key: KeyCode::Down,
         });
+
+    // Ball
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                color: Color::WHITE,
+                ..Default::default()
+            },
+            transform: Transform {
+                scale: Vec3::new(BALL_DIAMETER, BALL_DIAMETER, 1.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        });
 }
 
-fn paddle_movement(mut paddle_query: Query<(&mut Transform, &Paddle)>, keyboard_input: Res<Input<KeyCode>>) {
+fn paddle_movement_system(mut paddle_query: Query<(&mut Transform, &Paddle)>, keyboard_input: Res<Input<KeyCode>>) {
     paddle_query.iter_mut().for_each(|(mut transform, paddle)| {
         let y = &mut transform.translation.y;
         if keyboard_input.pressed(paddle.up_key) {
@@ -81,4 +102,8 @@ fn paddle_movement(mut paddle_query: Query<(&mut Transform, &Paddle)>, keyboard_
         }
         *y = y.min((SCREEN_HEIGHT - PADDLE_HEIGHT) / 2.0).max((-SCREEN_HEIGHT + PADDLE_HEIGHT) / 2.0);
     });
+}
+
+fn ball_collision_system(paddle_query: Query<&Paddle>) {
+
 }
