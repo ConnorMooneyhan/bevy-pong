@@ -28,7 +28,7 @@ struct Ball {
 enum GameState {
     StartScreen,
     Playing,
-    EndGame,
+    GameOver,
 }
 
 
@@ -41,6 +41,7 @@ fn main() {
             title: "Pong".to_string(),
             ..Default::default()
         })
+        .insert_resource(GameState::Playing)
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system_set(game_state_systems())
