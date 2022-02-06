@@ -41,6 +41,7 @@ fn main() {
         .insert_resource(GameState::Playing)
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
+        .add_system(handle_state)
         .add_system_set(game_state_systems())
         .run();
 }
@@ -48,7 +49,7 @@ fn main() {
 fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
-    // Left Paddle
+    // Spawn left Paddle
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -67,7 +68,7 @@ fn setup(mut commands: Commands) {
             down_key: KeyCode::S,
         });
 
-    // Right Paddle
+    // Spawn right Paddle
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -86,7 +87,7 @@ fn setup(mut commands: Commands) {
             down_key: KeyCode::Down,
         });
 
-    // Ball
+    // Spawn ball
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -104,3 +105,6 @@ fn setup(mut commands: Commands) {
         });
 }
 
+fn handle_state(state: ResMut<GameState>) {
+    
+}
