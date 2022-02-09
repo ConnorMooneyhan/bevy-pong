@@ -19,12 +19,18 @@ mod prelude {
     pub const LEFT: f32 = -SCREEN_WIDTH / 2.0;
     pub use crate::components::*;
     pub use crate::systems::*;
+    pub use crate::GameState;
 }
 
 use prelude::*;
 
-enum GameState {
-    StartScreen,
+pub struct Scoreboard {
+    pub player_one: i32,
+    pub player_two: i32,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
+pub enum GameState {
     Playing,
     GameOver,
 }
@@ -39,10 +45,13 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(GameState::Playing)
+        .insert_resource(Scoreboard {
+            player_one: 0,
+            player_two: 0,
+        })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
-        .add_system(handle_state)
-        .add_system_set(game_state_systems())
+        .add_system_set(playing_systems())
         .run();
 }
 
@@ -103,8 +112,4 @@ fn setup(mut commands: Commands) {
         .insert(Ball {
             velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0)
         });
-}
-
-fn handle_state(state: ResMut<GameState>) {
-    
 }
