@@ -114,6 +114,7 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
             velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0)
         });
 
+    // Scoreboard helper variables
     let text_style = TextStyle {
         font: asset_server.load("FiraSans-Bold.ttf"),
         font_size: SCOREBOARD_SIZE,
@@ -123,6 +124,7 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
         vertical: VerticalAlign::Center,
         horizontal: HorizontalAlign::Center,
     };
+
     // Spawn left scoreboard
     commands
         .spawn_bundle(Text2dBundle {
@@ -139,4 +141,17 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
         });
 
     // Spawn right scoreboard
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::with_section(
+                scoreboard.player_two.to_string(),
+                text_style.clone(),
+                text_alignment,
+            ),
+            transform: Transform {
+                translation: Vec3::new(RIGHT - (SCOREBOARD_SIZE / 2.0) - 5.0, TOP - (SCOREBOARD_SIZE / 2.0) - 5.0, 0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        });
 }
