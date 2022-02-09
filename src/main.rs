@@ -21,14 +21,23 @@ mod prelude {
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
+    pub use crate::Score;
+    pub use crate::LeftScoreboard;
+    pub use crate::RightScoreboard;
 }
 
 use prelude::*;
 
-pub struct Scoreboard {
+pub struct Score {
     pub player_one: i32,
     pub player_two: i32,
 }
+
+#[derive(Component)]
+pub struct LeftScoreboard;
+
+#[derive(Component)]
+pub struct RightScoreboard;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum GameState {
@@ -46,7 +55,7 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(GameState::Playing)
-        .insert_resource(Scoreboard {
+        .insert_resource(Score {
             player_one: 0,
             player_two: 0,
         })
@@ -56,7 +65,7 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServer>) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     // Spawn left Paddle
@@ -128,7 +137,7 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
     // Spawn left scoreboard
     commands.spawn_bundle(Text2dBundle {
         text: Text::with_section(
-            scoreboard.player_one.to_string(),
+            score.player_one.to_string(),
             text_style.clone(),
             text_alignment,
         ),
@@ -141,12 +150,12 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
             ..Default::default()
         },
         ..Default::default()
-    });
+    }).insert(LeftScoreboard);
 
     // Spawn right scoreboard
     commands.spawn_bundle(Text2dBundle {
         text: Text::with_section(
-            scoreboard.player_two.to_string(),
+            score.player_two.to_string(),
             text_style.clone(),
             text_alignment,
         ),
@@ -159,5 +168,5 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
             ..Default::default()
         },
         ..Default::default()
-    });
+    }).insert(RightScoreboard);
 }
