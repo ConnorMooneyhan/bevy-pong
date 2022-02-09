@@ -1,11 +1,11 @@
 #![warn(clippy::all, clippy::pedantic)]
 
-mod systems;
 mod components;
+mod systems;
 
 mod prelude {
     pub use bevy::prelude::*;
-    pub use bevy::sprite::collide_aabb::{ collide, Collision };
+    pub use bevy::sprite::collide_aabb::{collide, Collision};
     pub const SCREEN_WIDTH: f32 = 1200.0;
     pub const SCREEN_HEIGHT: f32 = 800.0;
     pub const PADDLE_WIDTH: f32 = 12.0;
@@ -111,14 +111,14 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
             ..Default::default()
         })
         .insert(Ball {
-            velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0)
+            velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0),
         });
 
     // Scoreboard helper variables
     let text_style = TextStyle {
         font: asset_server.load("FiraSans-Bold.ttf"),
         font_size: SCOREBOARD_SIZE,
-        color: Color::WHITE
+        color: Color::WHITE,
     };
     let text_alignment = TextAlignment {
         vertical: VerticalAlign::Center,
@@ -126,32 +126,38 @@ fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<
     };
 
     // Spawn left scoreboard
-    commands
-        .spawn_bundle(Text2dBundle {
-            text: Text::with_section(
-                scoreboard.player_one.to_string(),
-                text_style.clone(),
-                text_alignment,
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::with_section(
+            scoreboard.player_one.to_string(),
+            text_style.clone(),
+            text_alignment,
+        ),
+        transform: Transform {
+            translation: Vec3::new(
+                LEFT + (SCOREBOARD_SIZE / 2.0) + 5.0,
+                TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                0.0,
             ),
-            transform: Transform {
-                translation: Vec3::new(LEFT + (SCOREBOARD_SIZE / 2.0) + 5.0, TOP - (SCOREBOARD_SIZE / 2.0) - 5.0, 0.0),
-                ..Default::default()
-            },
             ..Default::default()
-        });
+        },
+        ..Default::default()
+    });
 
     // Spawn right scoreboard
-    commands
-        .spawn_bundle(Text2dBundle {
-            text: Text::with_section(
-                scoreboard.player_two.to_string(),
-                text_style.clone(),
-                text_alignment,
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::with_section(
+            scoreboard.player_two.to_string(),
+            text_style.clone(),
+            text_alignment,
+        ),
+        transform: Transform {
+            translation: Vec3::new(
+                RIGHT - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                0.0,
             ),
-            transform: Transform {
-                translation: Vec3::new(RIGHT - (SCOREBOARD_SIZE / 2.0) - 5.0, TOP - (SCOREBOARD_SIZE / 2.0) - 5.0, 0.0),
-                ..Default::default()
-            },
             ..Default::default()
-        });
+        },
+        ..Default::default()
+    });
 }

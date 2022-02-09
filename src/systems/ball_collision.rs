@@ -1,6 +1,9 @@
 use crate::prelude::*;
 
-pub fn ball_collision_system(paddle_query: Query<&Transform, (With<Paddle>, Without<Ball>)>, mut ball_query: Query<(&mut Ball, &mut Transform)>) {
+pub fn ball_collision_system(
+    paddle_query: Query<&Transform, (With<Paddle>, Without<Ball>)>,
+    mut ball_query: Query<(&mut Ball, &mut Transform)>,
+) {
     let (mut ball, mut ball_transform) = ball_query.single_mut();
     let mut x_multiplier = 1.0;
     let mut y_multiplier = 1.0;
@@ -11,7 +14,7 @@ pub fn ball_collision_system(paddle_query: Query<&Transform, (With<Paddle>, With
             ball_transform.translation,
             ball_transform.scale.truncate(),
             paddle_transform.translation,
-            paddle_transform.scale.truncate()
+            paddle_transform.scale.truncate(),
         );
 
         // Reflect off paddle
@@ -24,7 +27,7 @@ pub fn ball_collision_system(paddle_query: Query<&Transform, (With<Paddle>, With
             };
         }
     }
-    
+
     // Reflect off edges of screen
     if ball_transform.translation.y > TOP - BALL_RADIUS {
         y_multiplier = -1.0;
