@@ -17,6 +17,7 @@ mod prelude {
     pub const BOTTOM: f32 = -SCREEN_HEIGHT / 2.0;
     pub const RIGHT: f32 = SCREEN_WIDTH / 2.0;
     pub const LEFT: f32 = -SCREEN_WIDTH / 2.0;
+    pub const SCOREBOARD_SIZE: f32 = 48.0;
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
@@ -55,7 +56,7 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands, scoreboard: Res<Scoreboard>, asset_server: Res<AssetServer>) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     // Spawn left Paddle
@@ -112,4 +113,30 @@ fn setup(mut commands: Commands) {
         .insert(Ball {
             velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0)
         });
+
+    let text_style = TextStyle {
+        font: asset_server.load("FiraSans-Bold.ttf"),
+        font_size: SCOREBOARD_SIZE,
+        color: Color::WHITE
+    };
+    let text_alignment = TextAlignment {
+        vertical: VerticalAlign::Center,
+        horizontal: HorizontalAlign::Center,
+    };
+    // Spawn left scoreboard
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::with_section(
+                scoreboard.player_one.to_string(),
+                text_style.clone(),
+                text_alignment,
+            ),
+            transform: Transform {
+                translation: Vec3::new(LEFT + (SCOREBOARD_SIZE / 2.0) + 5.0, TOP - (SCOREBOARD_SIZE / 2.0) - 5.0, 0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        });
+
+    // Spawn right scoreboard
 }
