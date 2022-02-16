@@ -46,6 +46,12 @@ pub enum GameState {
 }
 
 fn main() {
+    let setup = SystemSet::new()
+        .with_system(setup_cameras)
+        .with_system(set_paddles)
+        .with_system(set_ball)
+        .with_system(set_scoreboards);
+
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
         .insert_resource(WindowDescriptor {
@@ -60,14 +66,16 @@ fn main() {
             player_two: 0,
         })
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup)
+        .add_startup_system_set(setup)
         .add_system_set(playing_systems())
         .run();
 }
 
-fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServer>) {
+fn setup_cameras(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+}
 
+fn set_paddles(mut commands: Commands) {
     // Spawn left Paddle
     commands
         .spawn_bundle(SpriteBundle {
@@ -106,6 +114,9 @@ fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServe
             down_key: KeyCode::Down,
         });
 
+}
+
+fn set_ball(mut commands: Commands) {
     // Spawn ball
     commands
         .spawn_bundle(SpriteBundle {
@@ -122,7 +133,9 @@ fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServe
         .insert(Ball {
             velocity: Vec3::new(BALL_SPEED, BALL_SPEED, 0.0),
         });
+}
 
+fn set_scoreboards(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServer>) {
     // Scoreboard helper variables
     let text_style = TextStyle {
         font: asset_server.load("FiraSans-Bold.ttf"),
@@ -133,7 +146,7 @@ fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServe
         vertical: VerticalAlign::Center,
         horizontal: HorizontalAlign::Center,
     };
-
+    
     // Spawn left scoreboard
     commands.spawn_bundle(Text2dBundle {
         text: Text::with_section(
@@ -151,7 +164,7 @@ fn setup(mut commands: Commands, score: Res<Score>, asset_server: Res<AssetServe
         },
         ..Default::default()
     }).insert(LeftScoreboard);
-
+    
     // Spawn right scoreboard
     commands.spawn_bundle(Text2dBundle {
         text: Text::with_section(
