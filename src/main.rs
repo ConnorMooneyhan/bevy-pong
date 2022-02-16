@@ -21,9 +21,9 @@ mod prelude {
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
-    pub use crate::Score;
     pub use crate::LeftScoreboard;
     pub use crate::RightScoreboard;
+    pub use crate::Score;
 }
 
 use prelude::*;
@@ -113,7 +113,6 @@ fn set_paddles(mut commands: Commands) {
             up_key: KeyCode::Up,
             down_key: KeyCode::Down,
         });
-
 }
 
 fn set_ball(mut commands: Commands) {
@@ -146,40 +145,44 @@ fn set_scoreboards(mut commands: Commands, score: Res<Score>, asset_server: Res<
         vertical: VerticalAlign::Center,
         horizontal: HorizontalAlign::Center,
     };
-    
+
     // Spawn left scoreboard
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::with_section(
-            score.player_one.to_string(),
-            text_style.clone(),
-            text_alignment,
-        ),
-        transform: Transform {
-            translation: Vec3::new(
-                LEFT + (SCOREBOARD_SIZE / 2.0) + 5.0,
-                TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
-                0.0,
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::with_section(
+                score.player_one.to_string(),
+                text_style.clone(),
+                text_alignment,
             ),
+            transform: Transform {
+                translation: Vec3::new(
+                    LEFT + (SCOREBOARD_SIZE / 2.0) + 5.0,
+                    TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                    0.0,
+                ),
+                ..Default::default()
+            },
             ..Default::default()
-        },
-        ..Default::default()
-    }).insert(LeftScoreboard);
-    
+        })
+        .insert(LeftScoreboard);
+
     // Spawn right scoreboard
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::with_section(
-            score.player_two.to_string(),
-            text_style.clone(),
-            text_alignment,
-        ),
-        transform: Transform {
-            translation: Vec3::new(
-                RIGHT - (SCOREBOARD_SIZE / 2.0) - 5.0,
-                TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
-                0.0,
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::with_section(
+                score.player_two.to_string(),
+                text_style.clone(),
+                text_alignment,
             ),
+            transform: Transform {
+                translation: Vec3::new(
+                    RIGHT - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                    TOP - (SCOREBOARD_SIZE / 2.0) - 5.0,
+                    0.0,
+                ),
+                ..Default::default()
+            },
             ..Default::default()
-        },
-        ..Default::default()
-    }).insert(RightScoreboard);
+        })
+        .insert(RightScoreboard);
 }

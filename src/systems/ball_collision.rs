@@ -6,7 +6,10 @@ pub fn ball_collision_system(
     mut ball_query: Query<(&mut Ball, &mut Transform)>,
     mut score: ResMut<Score>,
     mut left_scoreboard_text_query: Query<&mut Text, With<LeftScoreboard>>,
-    mut right_scoreboard_text_query: Query<&mut Text, (With<RightScoreboard>, Without<LeftScoreboard>)>,
+    mut right_scoreboard_text_query: Query<
+        &mut Text,
+        (With<RightScoreboard>, Without<LeftScoreboard>),
+    >,
 ) {
     let mut left_scoreboard_text = left_scoreboard_text_query.single_mut();
     let mut right_scoreboard_text = right_scoreboard_text_query.single_mut();
