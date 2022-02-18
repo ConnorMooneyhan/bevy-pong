@@ -18,6 +18,7 @@ mod prelude {
     pub const RIGHT: f32 = SCREEN_WIDTH / 2.0;
     pub const LEFT: f32 = -SCREEN_WIDTH / 2.0;
     pub const SCOREBOARD_SIZE: f32 = 48.0;
+    pub const GOAL_SCORE: i32 = 5;
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
@@ -27,12 +28,6 @@ mod prelude {
 use prelude::*;
 
 fn main() {
-    let setup = SystemSet::new()
-        .with_system(setup_cameras)
-        .with_system(set_paddles)
-        .with_system(set_ball)
-        .with_system(set_scoreboards);
-
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
         .insert_resource(WindowDescriptor {
@@ -47,7 +42,11 @@ fn main() {
         })
         .add_state(GameState::Playing)
         .add_plugins(DefaultPlugins)
-        .add_startup_system_set(setup)
+        .add_system_set(SystemSet::on_enter(GameState::Playing)
+            .with_system(setup_cameras)
+            .with_system(set_paddles)
+            .with_system(set_ball)
+            .with_system(set_scoreboards))
         .add_system_set(playing_systems())
         .add_system(systems::end_game_system)
         .add_system_set(SystemSet::on_exit(GameState::Playing).with_system(clear_screen))

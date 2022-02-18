@@ -17,7 +17,7 @@ pub fn gameover_systems() -> SystemSet {
 
 pub fn end_game_system(score: Res<Score>, mut game_state: ResMut<State<GameState>>) {
     if score.is_changed() {
-        if score.player_one >= 5 || score.player_two >= 5 {
+        if score.player_one >= GOAL_SCORE || score.player_two >= GOAL_SCORE {
             game_state.set(GameState::GameOver).unwrap();
         }
     }
