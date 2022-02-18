@@ -28,10 +28,10 @@ use prelude::*;
 
 fn main() {
     let setup = SystemSet::new()
-    .with_system(setup_cameras)
-    .with_system(set_paddles)
-    .with_system(set_ball)
-    .with_system(set_scoreboards);
+        .with_system(setup_cameras)
+        .with_system(set_paddles)
+        .with_system(set_ball)
+        .with_system(set_scoreboards);
 
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
@@ -49,8 +49,10 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system_set(setup)
         .add_system_set(playing_systems())
+        .add_system(systems::end_game_system)
+        .add_system_set(SystemSet::on_exit(GameState::Playing).with_system(clear_screen))
         .run();
-    }
+}
 
 pub struct Score {
     pub player_one: i32,
@@ -177,4 +179,8 @@ fn set_scoreboards(mut commands: Commands, score: Res<Score>, asset_server: Res<
             ..Default::default()
         })
         .insert(RightScoreboard);
+}
+
+fn clear_screen(mut commands: Commands, entities: Query<Entity>) {
+    entities.for_each(|entity| commands.entity(entity).despawn_recursive());
 }
