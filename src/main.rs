@@ -21,8 +21,6 @@ mod prelude {
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
-    pub use crate::LeftScoreboard;
-    pub use crate::RightScoreboard;
     pub use crate::Score;
 }
 
@@ -32,12 +30,6 @@ pub struct Score {
     pub player_one: i32,
     pub player_two: i32,
 }
-
-#[derive(Component)]
-pub struct LeftScoreboard;
-
-#[derive(Component)]
-pub struct RightScoreboard;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum GameState {

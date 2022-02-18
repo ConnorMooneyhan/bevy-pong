@@ -37,18 +37,24 @@ pub fn ball_collision_system(
         }
     }
 
-    // Reflect off edges of screen
+    // Reflect off top edge
     if ball_transform.translation.y > TOP - BALL_RADIUS {
         y_multiplier = -1.0;
     }
+
+    // Reflect off bottom edge
     if ball_transform.translation.y < BOTTOM + BALL_RADIUS {
         y_multiplier = -1.0;
     }
+
+    // Score on right collision
     if ball_transform.translation.x > RIGHT - BALL_RADIUS {
         score.player_one += 1;
         left_scoreboard_text.sections[0].value = score.player_one.to_string();
         x_multiplier = -1.0;
     }
+
+    // Score on left collision
     if ball_transform.translation.x < LEFT + BALL_RADIUS {
         score.player_two += 1;
         right_scoreboard_text.sections[0].value = score.player_two.to_string();

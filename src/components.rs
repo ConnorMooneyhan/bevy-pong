@@ -10,3 +10,9 @@ pub struct Paddle {
 pub struct Ball {
     pub velocity: Vec3,
 }
+
+#[derive(Component)]
+pub struct LeftScoreboard;
+
+#[derive(Component)]
+pub struct RightScoreboard;
