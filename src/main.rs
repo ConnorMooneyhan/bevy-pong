@@ -26,23 +26,12 @@ mod prelude {
 
 use prelude::*;
 
-pub struct Score {
-    pub player_one: i32,
-    pub player_two: i32,
-}
-
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
-pub enum GameState {
-    Playing,
-    GameOver,
-}
-
 fn main() {
     let setup = SystemSet::new()
-        .with_system(setup_cameras)
-        .with_system(set_paddles)
-        .with_system(set_ball)
-        .with_system(set_scoreboards);
+    .with_system(setup_cameras)
+    .with_system(set_paddles)
+    .with_system(set_ball)
+    .with_system(set_scoreboards);
 
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
@@ -52,15 +41,26 @@ fn main() {
             title: "Pong".to_string(),
             ..Default::default()
         })
-        .insert_resource(GameState::Playing)
         .insert_resource(Score {
             player_one: 0,
             player_two: 0,
         })
+        .add_state(GameState::Playing)
         .add_plugins(DefaultPlugins)
         .add_startup_system_set(setup)
         .add_system_set(playing_systems())
         .run();
+    }
+
+pub struct Score {
+    pub player_one: i32,
+    pub player_two: i32,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
+pub enum GameState {
+    Playing,
+    GameOver,
 }
 
 fn setup_cameras(mut commands: Commands) {
