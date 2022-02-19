@@ -18,11 +18,12 @@ mod prelude {
     pub const RIGHT: f32 = SCREEN_WIDTH / 2.0;
     pub const LEFT: f32 = -SCREEN_WIDTH / 2.0;
     pub const SCOREBOARD_SIZE: f32 = 48.0;
-    pub const GOAL_SCORE: i32 = 5;
+    pub const GOAL_SCORE: i32 = 1;
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
     pub use crate::Score;
+    pub use crate::Winner;
 }
 
 use prelude::*;
@@ -42,20 +43,33 @@ fn main() {
         })
         .add_state(GameState::Playing)
         .add_plugins(DefaultPlugins)
-        .add_system_set(SystemSet::on_enter(GameState::Playing)
-            .with_system(setup_cameras)
-            .with_system(set_paddles)
-            .with_system(set_ball)
-            .with_system(set_scoreboards))
+        .add_system_set(
+            SystemSet::on_enter(GameState::Playing)
+                .with_system(setup_cameras)
+                .with_system(set_paddles)
+                .with_system(set_ball)
+                .with_system(set_scoreboards),
+        )
         .add_system_set(playing_systems())
         .add_system(systems::end_game_system)
         .add_system_set(SystemSet::on_exit(GameState::Playing).with_system(clear_screen))
+        .add_system_set(
+            SystemSet::on_enter(GameState::GameOver)
+                .with_system(setup_cameras)
+                .with_system(setup_gameover),
+        )
         .run();
 }
 
 pub struct Score {
     pub player_one: i32,
     pub player_two: i32,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
+pub enum Winner {
+    Player1,
+    Player2,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -182,4 +196,30 @@ fn set_scoreboards(mut commands: Commands, score: Res<Score>, asset_server: Res<
 
 fn clear_screen(mut commands: Commands, entities: Query<Entity>) {
     entities.for_each(|entity| commands.entity(entity).despawn_recursive());
+    println!("Clearing screen");
+}
+
+fn setup_gameover(mut commands: Commands, asset_server: Res<AssetServer>, winner: Res<Winner>) {
+    let winner_text = match *winner {
+        Winner::Player1 => "Player 1",
+        Winner::Player2 => "Player 2",
+    };
+    let text_style = TextStyle {
+        font: asset_server.load("FiraSans-Bold.ttf"),
+        font_size: 60.0,
+        color: Color::WHITE,
+    };
+    let text_alignment = TextAlignment {
+        vertical: VerticalAlign::Center,
+        horizontal: HorizontalAlign::Center,
+    };
+
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::with_section(format!("{winner_text} wins!"), text_style, text_alignment),
+        transform: Transform {
+            translation: Vec3::new(0.0, 0.0, 0.0),
+            ..Default::default()
+        },
+        ..Default::default()
+    });
 }

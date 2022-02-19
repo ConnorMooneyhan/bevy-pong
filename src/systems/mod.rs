@@ -11,14 +11,18 @@ pub fn playing_systems() -> SystemSet {
         .with_system(reset_elements::reset_elements)
 }
 
-pub fn gameover_systems() -> SystemSet {
-    SystemSet::on_update(GameState::GameOver)
-}
-
-pub fn end_game_system(score: Res<Score>, mut game_state: ResMut<State<GameState>>) {
+pub fn end_game_system(
+    mut commands: Commands,
+    score: Res<Score>,
+    mut game_state: ResMut<State<GameState>>,
+) {
     if score.is_changed() {
-        if score.player_one >= GOAL_SCORE || score.player_two >= GOAL_SCORE {
+        if score.player_one >= GOAL_SCORE {
             game_state.set(GameState::GameOver).unwrap();
+            commands.insert_resource(Winner::Player1);
+        } else if score.player_two >= GOAL_SCORE {
+            game_state.set(GameState::GameOver).unwrap();
+            commands.insert_resource(Winner::Player2);
         }
     }
 }
