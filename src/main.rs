@@ -18,7 +18,7 @@ mod prelude {
     pub const RIGHT: f32 = SCREEN_WIDTH / 2.0;
     pub const LEFT: f32 = -SCREEN_WIDTH / 2.0;
     pub const SCOREBOARD_SIZE: f32 = 48.0;
-    pub const GOAL_SCORE: i32 = 1;
+    pub const GOAL_SCORE: i32 = 3;
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::GameState;
@@ -51,6 +51,7 @@ fn main() {
                 .with_system(set_scoreboards),
         )
         .add_system_set(playing_systems())
+        .add_system_set(gameover_systems())
         .add_system(systems::end_game_system)
         .add_system_set(SystemSet::on_exit(GameState::Playing).with_system(clear_screen))
         .add_system_set(
@@ -58,6 +59,7 @@ fn main() {
                 .with_system(setup_cameras)
                 .with_system(setup_gameover),
         )
+        .add_system_set(SystemSet::on_exit(GameState::GameOver).with_system(clear_screen))
         .run();
 }
 
@@ -196,7 +198,6 @@ fn set_scoreboards(mut commands: Commands, score: Res<Score>, asset_server: Res<
 
 fn clear_screen(mut commands: Commands, entities: Query<Entity>) {
     entities.for_each(|entity| commands.entity(entity).despawn_recursive());
-    println!("Clearing screen");
 }
 
 fn setup_gameover(mut commands: Commands, asset_server: Res<AssetServer>, winner: Res<Winner>) {
